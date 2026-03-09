@@ -1,0 +1,124 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local DURATION = 8
+local WIDTH = 340
+local HEIGHT = 84
+local PADDING = 12
+local DISCORD_INVITE = "https://discord.gg/AbEcqfhWyF"
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "FreshNotification"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = PlayerGui
+
+local card = Instance.new("Frame")
+card.Size = UDim2.new(0, WIDTH, 0, HEIGHT)
+card.Position = UDim2.new(1, -20 - WIDTH, 0, -HEIGHT)
+card.AnchorPoint = Vector2.new(0, 0)
+card.BorderSizePixel = 0
+card.Parent = screenGui
+
+local cardCorner = Instance.new("UICorner", card)
+cardCorner.CornerRadius = UDim.new(0, 10)
+
+local cardGradient = Instance.new("UIGradient", card)
+cardGradient.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
+}
+cardGradient.Rotation = 0
+
+local avatarHolder = Instance.new("Frame", card)
+avatarHolder.Size = UDim2.new(0, 56, 0, 56)
+avatarHolder.Position = UDim2.new(0, PADDING, 0, (HEIGHT-56)/2)
+avatarHolder.BackgroundTransparency = 1
+
+local avatar = Instance.new("ImageLabel", avatarHolder)
+avatar.Size = UDim2.new(1,0,1,0)
+avatar.BackgroundTransparency = 1
+avatar.Image = "rbxthumb://type=Asset&id=92343328137209&w=150&h=150"
+avatar.ScaleType = Enum.ScaleType.Crop
+local avatarCorner = Instance.new("UICorner", avatar)
+avatarCorner.CornerRadius = UDim.new(1,0)
+
+local textContainer = Instance.new("Frame", card)
+textContainer.BackgroundTransparency = 1
+textContainer.Position = UDim2.new(0, PADDING+56+12, 0, 8)
+textContainer.Size = UDim2.new(1, -(PADDING*2+56+80), 1, -16)
+
+local title = Instance.new("TextLabel", textContainer)
+title.Size = UDim2.new(1,0,0,24)
+title.BackgroundTransparency = 1
+title.Text = "Discord Help"
+title.Font = Enum.Font.GothamBlack
+title.TextSize = 16
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+local body = Instance.new("TextLabel", textContainer)
+body.Size = UDim2.new(1,0,1,-28)
+body.Position = UDim2.new(0,0,0,26)
+body.BackgroundTransparency = 1
+body.Text = "Can't join? DM @Gaxhlol or @eraseddiablo — or click Join."
+body.TextWrapped = true
+body.TextColor3 = Color3.fromRGB(255,255,255)
+body.Font = Enum.Font.Gotham
+body.TextSize = 14
+body.TextXAlignment = Enum.TextXAlignment.Left
+
+local cta = Instance.new("TextButton", card)
+cta.Size = UDim2.new(0,72,0,36)
+cta.Position = UDim2.new(1,-PADDING-72,0,(HEIGHT-36)/2)
+cta.Text = "Join"
+cta.TextColor3 = Color3.fromRGB(255,255,255)
+cta.Font = Enum.Font.GothamSemibold
+cta.TextSize = 14
+local ctaCorner = Instance.new("UICorner", cta)
+ctaCorner.CornerRadius = UDim.new(0,8)
+
+local ctaGradient = Instance.new("UIGradient", cta)
+ctaGradient.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+}
+ctaGradient.Rotation = 0
+
+local progressBG = Instance.new("Frame", card)
+progressBG.Size = UDim2.new(1,-PADDING*2,0,4)
+progressBG.Position = UDim2.new(0,PADDING,1,-8)
+local progressBGCorner = Instance.new("UICorner", progressBG)
+progressBGCorner.CornerRadius = UDim.new(0,2)
+
+local progress = Instance.new("Frame", progressBG)
+progress.Size = UDim2.new(1,0,1,0)
+local progressCorner = Instance.new("UICorner", progress)
+progressCorner.CornerRadius = UDim.new(0,2)
+
+local progressGradient = Instance.new("UIGradient", progress)
+progressGradient.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
+}
+progressGradient.Rotation = 0
+
+local function slideIn()
+TweenService:Create(card, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1,-20-WIDTH,0,20)}):Play()
+end
+
+local function slideOutAndRemove()
+local tween = TweenService:Create(card, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Position = UDim2.new(1,-20-WIDTH,0,-HEIGHT-20)})
+tween:Play()
+tween.Completed:Connect(function() screenGui:Destroy() end)
+end
+
+cta.MouseButton1Click:Connect(function()
+setclipboard(DISCORD_INVITE)
+slideOutAndRemove()
+end)
+
+slideIn()
+TweenService:Create(progress, TweenInfo.new(DURATION, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {Size = UDim2.new(0,0,1,0)}):Play()
+task.delay(DURATION,function() if card and card.Parent then slideOutAndRemove() end end)
