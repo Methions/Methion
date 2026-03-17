@@ -212,5 +212,4 @@ local commit = shared.CustomCommit and tostring(shared.CustomCommit) or shared.S
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Methions/Methion/refs/heads/main/Loader"))()
 wait(1)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Methions/Methion/refs/heads/main/Mod"))()
-wait(1)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Methions/Methion/refs/heads/main/Rehook"))()
